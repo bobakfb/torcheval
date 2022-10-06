@@ -37,7 +37,8 @@ def sync_and_compute(
         recipient_rank: The destination rank. If string "all" is passed in,
             then all ranks are the destination ranks.
 
-    Example:
+    Examples::
+
         >>> # Assumes world_size of 3.
         >>> # Process group initialization omitted on each rank.
         >>> import torch
@@ -95,7 +96,8 @@ def get_synced_state_dict(
     Returns:
         state dict of synced metric
 
-    Example:
+    Examples::
+
         >>> # Assumes world_size of 3.
         >>> # Process group initialization omitted on each rank.
         >>> import torch
@@ -163,7 +165,8 @@ def get_synced_metric(
         ValueError: when ``recipient_rank`` is not an integer or string
             "all".
 
-    Example:
+    Examples::
+
         >>> # Assumes world_size of 3.
         >>> # Process group initialization omitted on each rank.
         >>> import torch
@@ -213,7 +216,8 @@ def get_synced_metric(
 
     gathered_metric_list = _sync_metric_object(
         metric,
-        # pyre-ignore[6]: expect `ProcessGroup` but got `Optional[ProcessGroup]`.
+        # pyre-fixme[6]: For 2nd param expected `ProcessGroup` but got `Union[None,
+        #  dist.ProcessGroup, _distributed_c10d.ProcessGroup]`.
         process_group if process_group else dist.group.WORLD,
         # pyre-ignore[6]: expect `Union[int, Literal["all"]`, got `Union[int, str]`.
         recipient_rank,
@@ -261,7 +265,8 @@ def reset_metrics(metrics: _TMetrics) -> _TMetrics:
     Args:
         metrics: The metrics to be reset
 
-    Example:
+    Examples::
+
         >>> from torcheval.metrics import Max, Min
         >>> max = Max()
         >>> min = Min()
@@ -291,7 +296,8 @@ def to_device(
         *args: Variadic arguments forwarded to ``Metric.to``
         **kwargs: Named arguments forwarded to ``Metric.to``
 
-    Example:
+    Examples::
+
         >>> from torcheval.metrics import Max, Min
         >>> max = Max()
         >>> min = Min()
@@ -304,3 +310,29 @@ def to_device(
     for metric in metrics:
         metric.to(device, *args, **kwargs)
     return metrics
+
+
+def classwise_converter(
+    input: torch.Tensor, name: str, labels: Optional[List[str]] = None
+) -> Dict[str, torch.Tensor]:
+    """
+    Converts an unaveraged metric result tensor into a dictionary with
+    each key being 'metricname_classlabel' and value being the data
+    associated with that class.
+
+    Args:
+        input (torch.Tensor): The tensor to be split along its first dimension.
+        name (str): Name of the metric.
+        labels (List[str], Optional): Optional list of strings indicating the different classes.
+
+    Raises:
+        ValueError: When the length of `labels` is not equal to the number of classes.
+    """
+    if labels is None:
+        return {f"{name}_{i}": val for i, val in enumerate(input)}
+
+    if input.size(dim=0) != len(labels):
+        raise ValueError(
+            f"Number of labels {len(labels)} must be equal to the number of classes {input.size(dim=0)}!"
+        )
+    return {f"{name}_{label}": val for label, val in zip(labels, input)}

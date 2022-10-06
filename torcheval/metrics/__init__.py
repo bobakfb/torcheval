@@ -9,12 +9,19 @@ from torcheval.metrics.aggregation import Cat, Max, Mean, Min, Sum, Throughput
 from torcheval.metrics.classification import (
     BinaryAccuracy,
     BinaryAUROC,
+    BinaryBinnedAUROC,
     BinaryBinnedPrecisionRecallCurve,
+    BinaryConfusionMatrix,
+    BinaryF1Score,
     BinaryNormalizedEntropy,
     BinaryPrecision,
     BinaryPrecisionRecallCurve,
     BinaryRecall,
     MulticlassAccuracy,
+    MulticlassAUROC,
+    MulticlassBinnedAUROC,
+    MulticlassBinnedPrecisionRecallCurve,
+    MulticlassConfusionMatrix,
     MulticlassF1Score,
     MulticlassPrecision,
     MulticlassPrecisionRecallCurve,
@@ -23,8 +30,12 @@ from torcheval.metrics.classification import (
     TopKMultilabelAccuracy,
 )
 from torcheval.metrics.metric import Metric
-from torcheval.metrics.ranking import HitRate, ReciprocalRank
+from torcheval.metrics.ranking import HitRate, ReciprocalRank, WeightedCalibration
 from torcheval.metrics.regression import MeanSquaredError, R2Score
+from torcheval.metrics.window import (
+    WindowedBinaryAUROC,
+    WindowedBinaryNormalizedEntropy,
+)
 
 __all__ = [
     # base interface
@@ -34,7 +45,10 @@ __all__ = [
     # class metrics
     "BinaryAUROC",
     "BinaryAccuracy",
+    "BinaryBinnedAUROC",
     "BinaryBinnedPrecisionRecallCurve",
+    "BinaryConfusionMatrix",
+    "BinaryF1Score",
     "BinaryNormalizedEntropy",
     "BinaryPrecision",
     "BinaryPrecisionRecallCurve",
@@ -46,6 +60,10 @@ __all__ = [
     "MeanSquaredError",
     "Min",
     "MulticlassAccuracy",
+    "MulticlassAUROC",
+    "MulticlassBinnedAUROC",
+    "MulticlassBinnedPrecisionRecallCurve",
+    "MulticlassConfusionMatrix",
     "MulticlassF1Score",
     "MulticlassPrecision",
     "MulticlassPrecisionRecallCurve",
@@ -56,4 +74,7 @@ __all__ = [
     "ReciprocalRank",
     "Sum",
     "Throughput",
+    "WeightedCalibration",
+    "WindowedBinaryAUROC",
+    "WindowedBinaryNormalizedEntropy",
 ]
